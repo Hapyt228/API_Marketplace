@@ -1,4 +1,4 @@
-package com.example.marketplace.config.controller;
+package com.example.marketplace;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
