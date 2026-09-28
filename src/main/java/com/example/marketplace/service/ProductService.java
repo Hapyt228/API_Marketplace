@@ -4,22 +4,28 @@ import com.example.marketplace.dto.ProductRequest;
 import com.example.marketplace.dto.ProductResponse;
 import com.example.marketplace.entity.Category;
 import com.example.marketplace.entity.Product;
+import com.example.marketplace.entity.User;
 import com.example.marketplace.repository.CategoryRepository;
 import com.example.marketplace.repository.ProductRepository;
+import com.example.marketplace.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Service
 public class ProductService {
 
-    private ProductRepository productRepository;
-    private CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, UserRepository userRepository) {
         this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
+        this.userRepository = userRepository;
     }
 
     public ProductResponse getProductById(Long id){
@@ -53,16 +59,17 @@ public class ProductService {
         productByUpdate.setName(productRequest.getName());
         productByUpdate.setDescription(productRequest.getDescription());
         productByUpdate.setPrice(productRequest.getPrice());
-        if (productByUpdate.getCategory().getId() != productRequest.getCategoryId()){
+        if (!Objects.equals(productByUpdate.getCategory().getId(), productRequest.getCategoryId())){
             Category category = categoryRepository.findById(productRequest.getCategoryId())
                     .orElseThrow(() -> new EntityNotFoundException("Category not found: " + productRequest.getCategoryId()));
             productByUpdate.setCategory(category);
         }
-        // Потом будет как сделаем регистрацию
-        //        if (productByUpdate.getSeller().getId() != productRequest.getSeller().getId()){
-//            User user = productRequest.getSeller();
-//            productByUpdate.setSeller();
-//        }
+
+        if (!Objects.equals(productByUpdate.getSeller().getId(), productRequest.getSeller().getId())){
+            User user = userRepository.findById(productRequest.getSeller().getId())
+                    .orElseThrow(() -> new EntityNotFoundException("User not found: " + productRequest.getCategoryId()));
+            productByUpdate.setSeller(user);
+        }
 
         return new  ProductResponse(productRepository.save(productByUpdate));
     }
