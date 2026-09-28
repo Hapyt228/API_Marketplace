@@ -1,6 +1,7 @@
 package com.example.marketplace.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -22,6 +23,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @CreationTimestamp
     @Column(name = "createdAt",  nullable = false)
     private LocalDateTime createdAt;
 

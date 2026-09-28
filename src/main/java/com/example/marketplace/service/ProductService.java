@@ -43,13 +43,15 @@ public class ProductService {
     public ProductResponse addProduct(ProductRequest productRequest){
         Category category = categoryRepository.findById(productRequest.getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("Category not found: " + productRequest.getCategoryId()));
+        User user = userRepository.findById(productRequest.getSellerId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + productRequest.getCategoryId()));
 
         Product product = new Product();
         product.setName(productRequest.getName());
         product.setDescription(productRequest.getDescription());
         product.setPrice(productRequest.getPrice());
         product.setCategory(category);
-
+        product.setSeller(user);
 
         return new  ProductResponse(productRepository.save(product));
     }
@@ -65,8 +67,8 @@ public class ProductService {
             productByUpdate.setCategory(category);
         }
 
-        if (!Objects.equals(productByUpdate.getSeller().getId(), productRequest.getSeller().getId())){
-            User user = userRepository.findById(productRequest.getSeller().getId())
+        if (!Objects.equals(productByUpdate.getSeller().getId(), productRequest.getSellerId())){
+            User user = userRepository.findById(productRequest.getSellerId())
                     .orElseThrow(() -> new EntityNotFoundException("User not found: " + productRequest.getCategoryId()));
             productByUpdate.setSeller(user);
         }

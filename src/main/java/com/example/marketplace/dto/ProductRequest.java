@@ -1,18 +1,15 @@
 package com.example.marketplace.dto;
 
-import com.example.marketplace.entity.Category;
-import com.example.marketplace.entity.User;
-
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+
 
 public class ProductRequest {
     private String name;
     private String description;
     private BigDecimal price;
     private Long categoryId;
-    private UserInfoResponce seller;
+    private Long sellerId;
 
     public String getName() {
         return name;
@@ -46,11 +43,11 @@ public class ProductRequest {
         this.categoryId = categoryId;
     }
 
-    public UserInfoResponce getSeller() {
-        return seller;
+    public Long getSellerId() {
+        return sellerId;
     }
 
-    public void setSeller(UserInfoResponce seller) {
-        this.seller = seller;
+    public void setSellerId(Long sellerId) {
+        this.sellerId = sellerId;
     }
 }

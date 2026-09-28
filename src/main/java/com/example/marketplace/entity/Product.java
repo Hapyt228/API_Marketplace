@@ -1,6 +1,7 @@
 package com.example.marketplace.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -30,6 +31,7 @@ public class Product {
     @JoinColumn(name = "seller_id", nullable = false)
     private User seller;
 
+    @CreationTimestamp
     @Column(name = "createdAt")
     private LocalDateTime createdAt;
 
