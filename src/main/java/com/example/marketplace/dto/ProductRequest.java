@@ -12,6 +12,7 @@ public class ProductRequest {
     private String description;
     private BigDecimal price;
     private Long categoryId;
+    private UserInfoResponce seller;
 
     public String getName() {
         return name;
@@ -43,5 +44,13 @@ public class ProductRequest {
 
     public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public UserInfoResponce getSeller() {
+        return seller;
+    }
+
+    public void setSeller(UserInfoResponce seller) {
+        this.seller = seller;
     }
 }

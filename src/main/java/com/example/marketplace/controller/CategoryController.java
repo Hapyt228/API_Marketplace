@@ -1,5 +1,7 @@
 package com.example.marketplace.controller;
 
+import com.example.marketplace.dto.CategoryRequest;
+import com.example.marketplace.dto.CategoryResponse;
 import com.example.marketplace.entity.Category;
 import com.example.marketplace.entity.Product;
 import com.example.marketplace.service.CategoryService;
@@ -20,39 +22,40 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("/api/category")
-    public ResponseEntity<List<Category>> getAllProduct(){
+    @GetMapping("/api/categories")
+    public ResponseEntity<List<CategoryResponse>> getAllProduct(){
         return ResponseEntity.ok(categoryService.getAllCategory());
     }
 
-    @GetMapping("/api/category/{id}")
-    public ResponseEntity<Category> getProductById(
+    @GetMapping("/api/categories/{id}")
+    public ResponseEntity<CategoryResponse> getProductById(
             @PathVariable("id") Long id
     ){
         return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
 
-    @PostMapping("/api/category")
-    public ResponseEntity<Category> createProduct(
-            @RequestBody @Valid Category category
+    @PostMapping("/api/categories")
+    public ResponseEntity<CategoryResponse> createProduct(
+            @RequestBody @Valid CategoryRequest categoryRequest
     ){
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                categoryService.addCategory(category)
+                categoryService.addCategory(categoryRequest)
         );
     }
 
 
-    @PutMapping("/api/category/{id}")
-    public ResponseEntity<Category> updateProduct(
-            @PathVariable("id") Long id
+    @PutMapping("/api/categories/{id}")
+    public ResponseEntity<CategoryResponse> updateProduct(
+            @PathVariable("id") Long id,
+            @RequestBody @Valid CategoryRequest categoryRequest
     ){
         return ResponseEntity.status(HttpStatus.OK).body(
-                categoryService.updateCategory(id)
+                categoryService.updateCategory(id, categoryRequest)
         );
     }
 
-    @DeleteMapping("/api/category/{id}")
-    public ResponseEntity<Category> deleteProduct(
+    @DeleteMapping("/api/categories/{id}")
+    public ResponseEntity<Void> deleteProduct(
             @PathVariable("id") Long id
     ){
         categoryService.deleteCategory(id);

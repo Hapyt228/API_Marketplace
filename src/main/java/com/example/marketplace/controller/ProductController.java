@@ -1,7 +1,7 @@
 package com.example.marketplace.controller;
 
-import com.example.marketplace.entity.Product;
-import com.example.marketplace.repository.CategoryRepository;
+import com.example.marketplace.dto.ProductRequest;
+import com.example.marketplace.dto.ProductResponse;
 import com.example.marketplace.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -21,33 +21,35 @@ public class ProductController {
     }
 
     @GetMapping("/api/products")
-    public ResponseEntity<List<Product>> getAllProduct(){
+    public ResponseEntity<List<ProductResponse>> getAllProduct(){
         return ResponseEntity.ok(productService.getAllProduct());
     }
 
     @GetMapping("/api/products/{id}")
-    public ResponseEntity<Product> getProductById(
+    public ResponseEntity<ProductResponse> getProductById(
             @PathVariable("id") Long id
     ){
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
     @PostMapping("/api/products")
-    public ResponseEntity<Product> createProduct(
-            @RequestBody @Valid Product product
+    public ResponseEntity<ProductResponse> createProduct(
+            @RequestBody @Valid ProductRequest productRequest
     ){
+
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                productService.addProduct(product)
+                productService.addProduct(productRequest)
         );
     }
 
 
     @PutMapping("/api/products/{id}")
-    public ResponseEntity<Product> updateProduct(
-            @PathVariable("id") Long id
+    public ResponseEntity<ProductResponse> updateProduct(
+            @PathVariable("id") Long id,
+            @RequestBody @Valid ProductRequest productRequest
     ){
         return ResponseEntity.status(HttpStatus.OK).body(
-                productService.updateProduct(id)
+                productService.updateProduct(id, productRequest)
         );
     }
 
