@@ -2,8 +2,6 @@ package com.example.marketplace.controller;
 
 import com.example.marketplace.dto.CategoryRequest;
 import com.example.marketplace.dto.CategoryResponse;
-import com.example.marketplace.entity.Category;
-import com.example.marketplace.entity.Product;
 import com.example.marketplace.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
