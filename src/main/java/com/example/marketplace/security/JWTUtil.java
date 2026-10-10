@@ -1,6 +1,6 @@
 package com.example.marketplace.security;
 
-import com.example.marketplace.entity.User;
+import com.example.marketplace.entity.user.User;
 
 
 import io.jsonwebtoken.Jwts;

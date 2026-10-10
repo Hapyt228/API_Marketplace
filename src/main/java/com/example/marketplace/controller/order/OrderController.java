@@ -1,0 +1,52 @@
+package com.example.marketplace.controller.order;
+
+import com.example.marketplace.dto.order.OrderResponse;
+import com.example.marketplace.entity.user.User;
+import com.example.marketplace.service.order.OrderService;
+import org.springframework.http.HttpRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RestController
+public class OrderController {
+
+    private final OrderService orderService;
+
+
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
+    }
+
+    @PostMapping("/api/order")
+    public ResponseEntity<OrderResponse> createOrder(
+            @AuthenticationPrincipal User user
+    ){
+        Long userId = user.getId();
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrderFromCart(userId));
+    }
+
+    @GetMapping("/api/orders")
+    public ResponseEntity<List<OrderResponse>> getAllOrders(
+            @AuthenticationPrincipal User user
+    ){
+        Long userId = user.getId();
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.getAllOrderResponse(userId));
+    }
+
+    @GetMapping("/api/orders/{id}")
+    public ResponseEntity<OrderResponse> getOrderById(
+            @AuthenticationPrincipal User user,
+            @PathVariable Long id
+    ){
+        Long userId = user.getId();
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrderResponse(id, userId));
+    }
+}

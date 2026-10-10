@@ -1,6 +1,6 @@
 package com.example.marketplace.security;
 
-import com.example.marketplace.repository.UserRepository;
+import com.example.marketplace.repository.user.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
