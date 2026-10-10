@@ -2,7 +2,6 @@ package com.example.marketplace.repository.order;
 
 import com.example.marketplace.entity.order.Order;
 import com.example.marketplace.entity.user.User;
-import com.example.marketplace.entity.сart.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,15 +1,13 @@
 package com.example.marketplace.service.order;
 
-import com.example.marketplace.dto.cart.CartItemResponse;
-import com.example.marketplace.dto.cart.CartResponse;
 import com.example.marketplace.dto.order.OrderItemResponse;
 import com.example.marketplace.dto.order.OrderResponse;
 import com.example.marketplace.entity.order.Order;
 import com.example.marketplace.entity.order.OrderItem;
 import com.example.marketplace.entity.order.StatusOrder;
 import com.example.marketplace.entity.product.Product;
-import com.example.marketplace.entity.сart.Cart;
-import com.example.marketplace.entity.сart.CartItem;
+import com.example.marketplace.entity.cart.Cart;
+import com.example.marketplace.entity.cart.CartItem;
 import com.example.marketplace.repository.cart.CartRepository;
 import com.example.marketplace.repository.order.OrderItemRepository;
 import com.example.marketplace.repository.order.OrderRepository;

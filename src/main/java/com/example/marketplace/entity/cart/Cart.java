@@ -1,4 +1,4 @@
-package com.example.marketplace.entity.сart;
+package com.example.marketplace.entity.cart;
 
 import com.example.marketplace.entity.user.User;
 import jakarta.persistence.*;

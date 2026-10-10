@@ -1,7 +1,7 @@
 package com.example.marketplace.repository.cart;
 
 import com.example.marketplace.entity.user.User;
-import com.example.marketplace.entity.сart.Cart;
+import com.example.marketplace.entity.cart.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
