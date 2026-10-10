@@ -43,7 +43,11 @@ public class OrderService {
 
     @Transactional
     public OrderResponse createOrderFromCart(Long userId){
-        Cart cart = cartRepository.findByUser_Id(userId).orElseThrow(() -> new NoSuchElementException("Not found by id = " + userId));
+        Cart cart = cartRepository.findByUser_Id(userId)
+                .orElseThrow(() -> new IllegalStateException("Cart is empty"));
+        if (cart.getCartItemList().isEmpty()) {
+            throw new IllegalStateException("Cart is empty");
+        }
         Order order = new Order();
         BigDecimal orderTotalPrice = new BigDecimal(0);
         List<OrderItem> orderItemList = new ArrayList<>();

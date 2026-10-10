@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -96,27 +97,27 @@ public class CartService {
         CartResponse cartResponse = new CartResponse();
         List<CartItemResponse> cartItemResponses = new ArrayList<>();
         BigDecimal cartTotalPrice = new BigDecimal(0);
+        Iterator<CartItem> it = cart.getCartItemList().iterator();
         if (cart == null) {
             cartResponse.setItems(cartItemResponses);
             cartResponse.setTotalPrice(cartTotalPrice);
             return cartResponse;
         }
-        for(CartItem cartItem : cart.getCartItemList()){
-            if(cartItem.getProduct().getId().equals(productId)){
-                Integer cartItemQuentity = cartItem.getQuantity();
-                if((cartItemQuentity) == 1){
-                    cartItemRepository.delete(cartItem);
-                    continue;
+        while (it.hasNext()) {
+            CartItem item = it.next();
+            if (item.getProduct().getId().equals(productId)) {
+                if (item.getQuantity() == 1) {
+                    it.remove();
+                } else {
+                    item.setQuantity(item.getQuantity() - 1);
                 }
-                cartItem.setQuantity(cartItemQuentity - 1);
-                cartItemRepository.save(cartItem);
             }
-            CartItemResponse cartItemResponse = cartItemByCartItemResponse(cartItem);
-
-            cartItemResponses.add(cartItemResponse);
-            cartTotalPrice = cartTotalPrice.add(cartItemResponse.getTotalPrice());
         }
-
+        for (CartItem item : cart.getCartItemList()) {
+            CartItemResponse r = cartItemByCartItemResponse(item);
+            cartItemResponses.add(r);
+            cartTotalPrice = cartTotalPrice.add(r.getTotalPrice());
+        }
         cartResponse.setItems(cartItemResponses);
         cartResponse.setTotalPrice(cartTotalPrice);
         return cartResponse;

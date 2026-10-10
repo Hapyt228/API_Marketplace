@@ -1,10 +1,16 @@
 package com.example.marketplace.dto.cart;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
-@Valid
+
 public class CartItemRequest {
+    @NotNull
     private Long productId;
+
+    @NotNull
+    @Positive
     private Integer quantity;
 
     public Long getProductId() {
