@@ -97,12 +97,12 @@ public class CartService {
         CartResponse cartResponse = new CartResponse();
         List<CartItemResponse> cartItemResponses = new ArrayList<>();
         BigDecimal cartTotalPrice = new BigDecimal(0);
-        Iterator<CartItem> it = cart.getCartItemList().iterator();
         if (cart == null) {
             cartResponse.setItems(cartItemResponses);
             cartResponse.setTotalPrice(cartTotalPrice);
             return cartResponse;
         }
+        Iterator<CartItem> it = cart.getCartItemList().iterator();
         while (it.hasNext()) {
             CartItem item = it.next();
             if (item.getProduct().getId().equals(productId)) {
