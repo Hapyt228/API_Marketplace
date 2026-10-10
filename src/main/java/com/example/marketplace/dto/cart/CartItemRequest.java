@@ -1,5 +1,8 @@
 package com.example.marketplace.dto.cart;
 
+import jakarta.validation.Valid;
+
+@Valid
 public class CartItemRequest {
     private Long productId;
     private Integer quantity;

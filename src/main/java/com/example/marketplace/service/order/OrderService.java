@@ -15,6 +15,7 @@ import com.example.marketplace.repository.user.UserRepository;
 import com.example.marketplace.service.cart.CartService;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -40,6 +41,7 @@ public class OrderService {
         this.cartService = cartService;
     }
 
+    @Transactional
     public OrderResponse createOrderFromCart(Long userId){
         Cart cart = cartRepository.findByUser_Id(userId).orElseThrow(() -> new NoSuchElementException("Not found by id = " + userId));
         Order order = new Order();
