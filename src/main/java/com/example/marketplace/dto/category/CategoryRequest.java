@@ -1,8 +1,14 @@
 package com.example.marketplace.dto.category;
 
 
+import jakarta.validation.constraints.NotBlank;
+
 public class CategoryRequest {
+
+    @NotBlank
     private String name;
+
+    @NotBlank
     private String description;
 
     public String getName() {

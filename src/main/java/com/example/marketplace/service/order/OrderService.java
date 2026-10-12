@@ -8,6 +8,8 @@ import com.example.marketplace.entity.order.StatusOrder;
 import com.example.marketplace.entity.product.Product;
 import com.example.marketplace.entity.cart.Cart;
 import com.example.marketplace.entity.cart.CartItem;
+import com.example.marketplace.exception.EmptyCartException;
+import com.example.marketplace.exception.ResourceNotFoundException;
 import com.example.marketplace.repository.cart.CartRepository;
 import com.example.marketplace.repository.order.OrderItemRepository;
 import com.example.marketplace.repository.order.OrderRepository;
@@ -21,7 +23,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
+
 
 @Service
 public class OrderService {
@@ -44,9 +46,9 @@ public class OrderService {
     @Transactional
     public OrderResponse createOrderFromCart(Long userId){
         Cart cart = cartRepository.findByUser_Id(userId)
-                .orElseThrow(() -> new IllegalStateException("Cart is empty"));
+                .orElseThrow(() -> new EmptyCartException("Cart is empty"));
         if (cart.getCartItemList().isEmpty()) {
-            throw new IllegalStateException("Cart is empty");
+            throw new EmptyCartException("Cart is empty");
         }
         Order order = new Order();
         BigDecimal orderTotalPrice = new BigDecimal(0);
@@ -57,7 +59,7 @@ public class OrderService {
            BigDecimal totalPrice = orderItem.getPriceAtPurchase().multiply(new BigDecimal(orderItem.getQuantity()));
            orderTotalPrice = orderTotalPrice.add(totalPrice);
         }
-        order.setUser(userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("Not found by id = " + userId)));
+        order.setUser(userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found: " + userId)));
         order.setTotalPrice(orderTotalPrice);
         order.setOrderItemList(orderItemList);
         order.setStatus(StatusOrder.CREATED);
@@ -79,7 +81,7 @@ public class OrderService {
 
     public OrderResponse getOrderResponse(Long orderId, Long currentUserId){
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new NoSuchElementException("Not found by id = " + orderId));
+                .orElseThrow(() -> new ResourceNotFoundException("Not found by id = " + orderId));
         if (!order.getUser().getId().equals(currentUserId)) {
             throw new AccessDeniedException("Order does not belong to current user");
         }

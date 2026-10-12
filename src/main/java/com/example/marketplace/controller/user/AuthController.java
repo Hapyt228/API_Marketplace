@@ -4,6 +4,7 @@ import com.example.marketplace.dto.user.AuthResponse;
 import com.example.marketplace.dto.user.LoginRequest;
 import com.example.marketplace.dto.user.RegisterRequest;
 import com.example.marketplace.service.user.AuthService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")
+@Valid
 public class AuthController {
 
     private final AuthService authService;

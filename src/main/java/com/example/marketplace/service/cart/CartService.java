@@ -6,6 +6,7 @@ import com.example.marketplace.dto.cart.CartResponse;
 import com.example.marketplace.entity.product.Product;
 import com.example.marketplace.entity.cart.Cart;
 import com.example.marketplace.entity.cart.CartItem;
+import com.example.marketplace.exception.ResourceNotFoundException;
 import com.example.marketplace.repository.cart.CartItemRepository;
 import com.example.marketplace.repository.cart.CartRepository;
 import com.example.marketplace.repository.product.ProductRepository;
@@ -17,7 +18,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class CartService {
@@ -36,7 +36,7 @@ public class CartService {
 
     @Transactional
     public CartResponse addToCart(Long userId, CartItemRequest cartItemRequest){
-        Cart cart = cartRepository.findByUser_Id(userId).orElse(getOrCreateCart(userId));
+        Cart cart = getOrCreateCart(userId);
         CartResponse cartResponse = new CartResponse();
         List<CartItemResponse> cartItemResponses = new ArrayList<>();
         BigDecimal cartTotalPrice = new BigDecimal(0);
@@ -146,7 +146,7 @@ public class CartService {
     }
 
     private CartItem cartItemRequstAndCartByCartItem(CartItemRequest cartItemRequest, Cart cart) {
-        Product product = productRepository.findById(cartItemRequest.getProductId()).orElseThrow(() -> new NoSuchElementException("User not found product: "));
+        Product product = productRepository.findById(cartItemRequest.getProductId()).orElseThrow(() -> new ResourceNotFoundException("Product not found:" + cartItemRequest.getProductId()));
 
         CartItem cartItem = new CartItem();
         cartItem.setCart(cart);
@@ -160,7 +160,7 @@ public class CartService {
         return cartRepository.findByUser_Id(userId).orElseGet(() -> {
             Cart cart = new Cart();
             cart.setUser(userRepository.findById(userId)
-                    .orElseThrow(() -> new NoSuchElementException("User not found: " + userId)));
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userId)));
             return cartRepository.save(cart);
         });
     }

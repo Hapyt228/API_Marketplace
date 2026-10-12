@@ -5,13 +5,14 @@ import com.example.marketplace.dto.user.LoginRequest;
 import com.example.marketplace.dto.user.RegisterRequest;
 import com.example.marketplace.entity.user.Role;
 import com.example.marketplace.entity.user.User;
+import com.example.marketplace.exception.EmailAlreadyExistsException;
+import com.example.marketplace.exception.InvalidCredentialsException;
 import com.example.marketplace.repository.user.UserRepository;
 import com.example.marketplace.security.JWTUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.NoSuchElementException;
 
 @Service
 public class AuthService {
@@ -29,7 +30,7 @@ public class AuthService {
 
     public void register(RegisterRequest registerRequest ) {
         if( userRepository.findByEmail(registerRequest.getEmail()).isPresent() ) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new EmailAlreadyExistsException("Invalid email or password");
         }
         User user = new User();
         user.setEmail(registerRequest.getEmail());
@@ -40,11 +41,11 @@ public class AuthService {
     }
 
     public AuthResponse login(LoginRequest loginRequest){
-        User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() -> new NoSuchElementException("Not found by email = " + loginRequest.getEmail()));
+        User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() -> new InvalidCredentialsException("Not found by email = " + loginRequest.getEmail()));
         if(passwordEncoder.matches(loginRequest.getPassword(), user.getPasswordHash())){
             return new AuthResponse(jwtUtil.generateToken(user));
         } else {
-            throw new IllegalArgumentException("Wrong password");
+            throw new InvalidCredentialsException("Invalid email or password");
         }
 
     }

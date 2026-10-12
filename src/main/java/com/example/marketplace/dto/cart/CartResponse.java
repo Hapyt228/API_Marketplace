@@ -1,10 +1,17 @@
 package com.example.marketplace.dto.cart;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 import java.math.BigDecimal;
 import java.util.List;
 
 public class CartResponse {
+
     private List<CartItemResponse> items;
+
+    @NotNull
+    @Positive
     private BigDecimal totalPrice;
 
     public CartResponse(List<CartItemResponse> items,  BigDecimal totalPrice) {

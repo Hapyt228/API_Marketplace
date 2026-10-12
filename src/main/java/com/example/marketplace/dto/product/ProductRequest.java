@@ -1,14 +1,30 @@
 package com.example.marketplace.dto.product;
 
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 import java.math.BigDecimal;
 
 
 public class ProductRequest {
+    @NotBlank
     private String name;
+
+    @NotBlank
     private String description;
+
+    @NotNull
+    @Positive
     private BigDecimal price;
+
+    @NotNull
+    @Positive
     private Long categoryId;
+
+    @NotNull
+    @Positive
     private Long sellerId;
 
     public String getName() {
