@@ -146,7 +146,7 @@ public class CartService {
     }
 
     private CartItem cartItemRequstAndCartByCartItem(CartItemRequest cartItemRequest, Cart cart) {
-        Product product = productRepository.findById(cartItemRequest.getProductId()).orElseThrow(() -> new ResourceNotFoundException("Product not found:" + cartItemRequest.getProductId()));
+        Product product = productRepository.findById(cartItemRequest.getProductId()).orElseThrow(() -> new ResourceNotFoundException("Product not found: " + cartItemRequest.getProductId()));
 
         CartItem cartItem = new CartItem();
         cartItem.setCart(cart);

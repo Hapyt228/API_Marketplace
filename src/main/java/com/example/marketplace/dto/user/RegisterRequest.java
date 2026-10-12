@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 
 public class RegisterRequest {
     @Email
+    @NotBlank
     private String email;
 
     @NotBlank

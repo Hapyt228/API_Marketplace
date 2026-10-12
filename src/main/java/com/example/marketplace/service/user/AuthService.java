@@ -30,7 +30,7 @@ public class AuthService {
 
     public void register(RegisterRequest registerRequest ) {
         if( userRepository.findByEmail(registerRequest.getEmail()).isPresent() ) {
-            throw new EmailAlreadyExistsException("Invalid email or password");
+            throw new EmailAlreadyExistsException("Email already exists");
         }
         User user = new User();
         user.setEmail(registerRequest.getEmail());
@@ -41,7 +41,7 @@ public class AuthService {
     }
 
     public AuthResponse login(LoginRequest loginRequest){
-        User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() -> new InvalidCredentialsException("Not found by email = " + loginRequest.getEmail()));
+        User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
         if(passwordEncoder.matches(loginRequest.getPassword(), user.getPasswordHash())){
             return new AuthResponse(jwtUtil.generateToken(user));
         } else {

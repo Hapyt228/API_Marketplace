@@ -11,8 +11,6 @@ import java.math.BigDecimal;
 public class ProductRequest {
     @NotBlank
     private String name;
-
-    @NotBlank
     private String description;
 
     @NotNull
@@ -22,10 +20,6 @@ public class ProductRequest {
     @NotNull
     @Positive
     private Long categoryId;
-
-    @NotNull
-    @Positive
-    private Long sellerId;
 
     public String getName() {
         return name;
@@ -57,13 +51,5 @@ public class ProductRequest {
 
     public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
-    }
-
-    public Long getSellerId() {
-        return sellerId;
-    }
-
-    public void setSellerId(Long sellerId) {
-        this.sellerId = sellerId;
     }
 }

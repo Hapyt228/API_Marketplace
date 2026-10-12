@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")
-@Valid
 public class AuthController {
 
     private final AuthService authService;
@@ -25,7 +24,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(
-           @RequestBody RegisterRequest registerRequest
+           @RequestBody @Valid RegisterRequest registerRequest
     ) {
         authService.register(registerRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -34,7 +33,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(
-            @RequestBody LoginRequest loginRequest
+            @RequestBody @Valid LoginRequest loginRequest
     ) {
         AuthResponse authResponse = authService.login(loginRequest);
         return  ResponseEntity.status(HttpStatus.OK)

@@ -1,9 +1,9 @@
-    package com.example.marketplace.exception;
+package com.example.marketplace.exception;
 
-    public class ResourceNotFoundException extends RuntimeException {
+public class ResourceNotFoundException extends RuntimeException {
 
-        public ResourceNotFoundException(String message) {
-            super(message);
-        }
-
+    public ResourceNotFoundException(String message) {
+        super(message);
     }
+
+}

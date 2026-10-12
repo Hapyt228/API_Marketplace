@@ -7,8 +7,6 @@ public class CategoryRequest {
 
     @NotBlank
     private String name;
-
-    @NotBlank
     private String description;
 
     public String getName() {
