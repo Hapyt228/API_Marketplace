@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class OrderResponse {
+    private Long id;
     private List<OrderItemResponse> items;
     private BigDecimal totalPrice;
     private StatusOrder status;
@@ -20,6 +21,14 @@ public class OrderResponse {
     }
 
     public OrderResponse() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public List<OrderItemResponse> getItems() {

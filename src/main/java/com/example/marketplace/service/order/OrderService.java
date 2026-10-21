@@ -118,6 +118,7 @@ public class OrderService {
         for (OrderItem orderItem : order.getOrderItemList()) {
             orderItemList.add(orderItemByOrderItemResponse(orderItem));
         }
+        orderResponse.setId(order.getId());
         orderResponse.setItems(orderItemList);
         orderResponse.setTotalPrice(order.getTotalPrice());
         orderResponse.setStatus(order.getStatus());

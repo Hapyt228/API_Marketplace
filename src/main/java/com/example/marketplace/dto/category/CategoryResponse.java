@@ -5,6 +5,7 @@ import com.example.marketplace.entity.category.Category;
 
 
 public class CategoryResponse {
+    private Long id;
     private String name;
     private String description;
 
@@ -12,8 +13,17 @@ public class CategoryResponse {
     }
 
     public CategoryResponse(Category category) {
-        name = category.getName();
-        description = category.getDescription();
+        this.id = category.getId();
+        this.name = category.getName();
+        this.description = category.getDescription();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
