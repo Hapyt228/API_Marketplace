@@ -8,12 +8,12 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("/api/products")
 public class ProductController {
 
     private ProductService productService;
@@ -22,19 +22,19 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("/api/products")
+    @GetMapping
     public ResponseEntity<List<ProductResponse>> getAllProduct(){
         return ResponseEntity.ok(productService.getAllProduct());
     }
 
-    @GetMapping("/api/products/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProductById(
             @PathVariable("id") Long id
     ){
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
-    @PostMapping("/api/products")
+    @PostMapping
     public ResponseEntity<ProductResponse> createProduct(
             @AuthenticationPrincipal User user,
             @RequestBody @Valid ProductRequest productRequest
@@ -45,7 +45,7 @@ public class ProductController {
     }
 
 
-    @PutMapping("/api/products/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ProductResponse> updateProduct(
             @PathVariable("id") Long id,
             @RequestBody @Valid ProductRequest productRequest,
@@ -56,7 +56,7 @@ public class ProductController {
         );
     }
 
-    @DeleteMapping("/api/products/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(
             @PathVariable("id") Long id,
             @AuthenticationPrincipal User user

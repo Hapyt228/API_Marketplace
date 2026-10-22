@@ -11,6 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api/cart")
 public class CartController {
 
     private final CartService cartService;
@@ -19,7 +20,7 @@ public class CartController {
         this.cartService = cartService;
     }
 
-    @PostMapping("/api/cart")
+    @PostMapping
     public ResponseEntity<CartResponse> addToCart(
             @RequestBody @Valid CartItemRequest cartItemRequest,
             @AuthenticationPrincipal User user
@@ -28,7 +29,7 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.CREATED).body(cartService.addToCart(userId, cartItemRequest));
     }
 
-    @GetMapping("/api/cart")
+    @GetMapping
     public ResponseEntity<CartResponse> getCart(
             @AuthenticationPrincipal User user
     ){
@@ -36,7 +37,7 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.OK).body(cartService.getCart(userId));
     }
 
-    @DeleteMapping("/api/cart/{productId}")
+    @DeleteMapping("/{productId}")
     public ResponseEntity<CartResponse> removeFromCart(
             @PathVariable("productId") Long productId,
             @AuthenticationPrincipal User user
@@ -45,7 +46,7 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.OK).body(cartService.removeFromCart(userId, productId));
     }
 
-    @DeleteMapping("/api/cart")
+    @DeleteMapping
     public ResponseEntity<CartResponse> clearCart(
             @AuthenticationPrincipal User user
     ){

@@ -16,7 +16,7 @@ class MarketplaceFlowIntegrationTest extends AbstractIntegrationTest {
     void fullFlow_cartToOrder_clearsCart() throws Exception {
         String seller = registerAndLogin();
         String buyer = registerAndLogin();
-        long productId = createProduct(seller, createCategory(seller));
+        long productId = createProduct(seller, createCategory(loginAsAdmin()));
 
         send(post("/api/cart"), buyer, cartJson(productId, 2))
                 .andExpect(status().isCreated())
@@ -85,7 +85,7 @@ class MarketplaceFlowIntegrationTest extends AbstractIntegrationTest {
     void otherUser_cannotUpdateOrDeleteProduct() throws Exception {
         String seller = registerAndLogin();
         String stranger = registerAndLogin();
-        long categoryId = createCategory(seller);
+        long categoryId = createCategory(loginAsAdmin());
         long productId = createProduct(seller, categoryId);
         String update = "{\"name\":\"Hacked\",\"description\":\"d\",\"price\":1.00,\"categoryId\":"
                 + categoryId + "}";
@@ -101,7 +101,7 @@ class MarketplaceFlowIntegrationTest extends AbstractIntegrationTest {
         String seller = registerAndLogin();
         String buyer = registerAndLogin();
         String stranger = registerAndLogin();
-        long productId = createProduct(seller, createCategory(seller));
+        long productId = createProduct(seller, createCategory(loginAsAdmin()));
         send(post("/api/cart"), buyer, cartJson(productId, 1)).andExpect(status().isCreated());
         long orderId = idOf(send(post("/api/orders"), buyer, null).andExpect(status().isCreated()));
 
@@ -113,7 +113,7 @@ class MarketplaceFlowIntegrationTest extends AbstractIntegrationTest {
     void deleteProduct_alreadyOrdered_returns409() throws Exception {
         String seller = registerAndLogin();
         String buyer = registerAndLogin();
-        long productId = createProduct(seller, createCategory(seller));
+        long productId = createProduct(seller, createCategory(loginAsAdmin()));
         send(post("/api/cart"), buyer, cartJson(productId, 1)).andExpect(status().isCreated());
         send(post("/api/orders"), buyer, null).andExpect(status().isCreated());
 

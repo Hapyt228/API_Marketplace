@@ -6,12 +6,12 @@ import com.example.marketplace.service.category.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("/api/categories")
 public class CategoryController {
 
     private CategoryService categoryService;
@@ -20,19 +20,19 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("/api/categories")
+    @GetMapping
     public ResponseEntity<List<CategoryResponse>> getAllProduct(){
         return ResponseEntity.ok(categoryService.getAllCategory());
     }
 
-    @GetMapping("/api/categories/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<CategoryResponse> getProductById(
             @PathVariable("id") Long id
     ){
         return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
 
-    @PostMapping("/api/categories")
+    @PostMapping
     public ResponseEntity<CategoryResponse> createProduct(
             @RequestBody @Valid CategoryRequest categoryRequest
     ){
@@ -42,7 +42,7 @@ public class CategoryController {
     }
 
 
-    @PutMapping("/api/categories/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<CategoryResponse> updateProduct(
             @PathVariable("id") Long id,
             @RequestBody @Valid CategoryRequest categoryRequest
@@ -52,7 +52,7 @@ public class CategoryController {
         );
     }
 
-    @DeleteMapping("/api/categories/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(
             @PathVariable("id") Long id
     ){

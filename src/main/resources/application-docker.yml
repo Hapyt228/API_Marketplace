@@ -1,3 +1,5 @@
 spring:
   datasource:
     url: jdbc:postgresql://marketplace-db:5432/${DB_NAME}
+    ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+    ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}

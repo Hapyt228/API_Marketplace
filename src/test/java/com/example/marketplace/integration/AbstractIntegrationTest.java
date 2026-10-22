@@ -34,6 +34,8 @@ public abstract class AbstractIntegrationTest {
         registry.add("spring.datasource.password", postgres::getPassword);
         registry.add("jwt.secret", () -> "test-secret-test-secret-test-secret-123456");
         registry.add("jwt.expiration-ms", () -> "3600000");
+        registry.add("app.admin.email", () -> "admin@test.com");
+        registry.add("app.admin.password", () -> "AdminPassword123");
     }
 
     @Autowired
@@ -80,5 +82,22 @@ public abstract class AbstractIntegrationTest {
 
     protected String cartJson(long productId, int quantity) {
         return "{\"productId\":" + productId + ",\"quantity\":" + quantity + "}";
+    }
+
+    protected String loginAsAdmin() throws Exception {
+        String json = """
+            {
+              "email": "admin@test.com",
+              "password": "AdminPassword123"
+            }
+            """;
+
+        String response = send(post("/api/auth/login"), null, json)
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        return JsonPath.read(response, "$.token");
     }
 }

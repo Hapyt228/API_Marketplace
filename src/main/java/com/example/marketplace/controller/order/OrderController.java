@@ -6,14 +6,12 @@ import com.example.marketplace.service.order.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/orders")
 public class OrderController {
 
     private final OrderService orderService;
@@ -23,7 +21,7 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @PostMapping("/api/orders")
+    @PostMapping
     public ResponseEntity<OrderResponse> createOrder(
             @AuthenticationPrincipal User user
     ){
@@ -31,7 +29,7 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrderFromCart(userId));
     }
 
-    @GetMapping("/api/orders")
+    @GetMapping
     public ResponseEntity<List<OrderResponse>> getAllOrders(
             @AuthenticationPrincipal User user
     ){
@@ -39,7 +37,7 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.OK).body(orderService.getAllOrderResponse(userId));
     }
 
-    @GetMapping("/api/orders/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<OrderResponse> getOrderById(
             @AuthenticationPrincipal User user,
             @PathVariable Long id

@@ -40,6 +40,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/products").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/categories").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/categories/{id}").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/categories").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT , "/api/categories/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE , "/api/categories/{id}").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception
