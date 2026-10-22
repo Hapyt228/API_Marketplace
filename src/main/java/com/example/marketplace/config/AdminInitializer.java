@@ -37,10 +37,10 @@ public class AdminInitializer implements CommandLineRunner {
                 || adminPassword == null || adminPassword.isBlank()) {
             return;
         }
-       else if(userRepository.existsByRole(Role.ADMIN)) {
+       if(userRepository.existsByRole(Role.ADMIN)) {
            return;
        }
-       else if(userRepository.findByEmail(adminEmail).isPresent()) {
+       if(userRepository.findByEmail(adminEmail).isPresent()) {
             log.warn(
                     "Admin initialization skipped: configured email is already in use"
             );
