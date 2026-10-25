@@ -9,6 +9,7 @@ import com.example.marketplace.exception.ResourceNotFoundException;
 import com.example.marketplace.repository.category.CategoryRepository;
 import com.example.marketplace.repository.product.ProductRepository;
 import com.example.marketplace.repository.review.ReviewRepository;
+import com.example.marketplace.repository.review.ReviewStatistics;
 import com.example.marketplace.repository.user.UserRepository;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -32,14 +33,14 @@ public class ProductService {
     }
 
     public ProductResponse getProductById(Long id){
-     Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found by id = " + id));
-     return newProductResponse(product);
+        Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found by id = " + id));
+        return newProductResponse(product);
     }
 
     public List<ProductResponse> getAllProduct(){
         return productRepository.findAll()
                 .stream()
-                .map(ProductResponse::new)
+                .map(this::newProductResponse)
                 .toList();
     }
 
@@ -89,13 +90,10 @@ public class ProductService {
     }
 
     private  ProductResponse newProductResponse(Product product){
-        ProductResponse productResponse = new ProductResponse();
-        productResponse.setId(product.getId());
-        productResponse.setName(product.getName());
-        productResponse.setDescription(product.getDescription());
-        productResponse.setPrice(product.getPrice());
-        productResponse.setAverageRating(reviewRepository.getStatisticsByProductId(product.getId()).getAverageRating());
-        productResponse.setReviewsCount(reviewRepository.getStatisticsByProductId(product.getId()).getReviewsCount());
+        ProductResponse productResponse = new ProductResponse(product);
+        ReviewStatistics reviewStatistics = reviewRepository.getStatisticsByProductId(product.getId());
+        productResponse.setAverageRating(reviewStatistics.getAverageRating());
+        productResponse.setReviewsCount(reviewStatistics.getReviewsCount());
         return productResponse;
     }
 

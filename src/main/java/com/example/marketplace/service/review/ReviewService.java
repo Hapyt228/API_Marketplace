@@ -7,6 +7,7 @@ import com.example.marketplace.entity.review.Review;
 import com.example.marketplace.entity.user.Role;
 import com.example.marketplace.entity.user.User;
 import com.example.marketplace.exception.ResourceNotFoundException;
+import com.example.marketplace.exception.ReviewAlreadyExistsException;
 import com.example.marketplace.repository.product.ProductRepository;
 import com.example.marketplace.repository.review.ReviewRepository;
 import com.example.marketplace.repository.user.UserRepository;
@@ -36,7 +37,7 @@ public class ReviewService {
              throw new AccessDeniedException("Seller not make review");
          }
          if (reviewRepository.existsByUser_IdAndProduct_Id(userId, productId)) {
-             throw new ResourceNotFoundException("You make 1 review");
+             throw new ReviewAlreadyExistsException("You make 1 review");
          }
          Review review = new Review();
          review.setProduct(product);
