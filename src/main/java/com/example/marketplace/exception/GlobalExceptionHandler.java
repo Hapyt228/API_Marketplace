@@ -90,6 +90,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(ReviewAlreadyExistsException.class)
+    public ProblemDetail ReviewAlreadyExistsException(
+            ReviewAlreadyExistsException exception
+    ) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONFLICT,
+                exception.getMessage()
+        );
+
+        problem.setTitle("Conflicting Review");
+
+        return problem;
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,

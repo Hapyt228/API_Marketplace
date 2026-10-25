@@ -8,6 +8,7 @@ import com.example.marketplace.entity.user.User;
 import com.example.marketplace.exception.ResourceNotFoundException;
 import com.example.marketplace.repository.category.CategoryRepository;
 import com.example.marketplace.repository.product.ProductRepository;
+import com.example.marketplace.repository.review.ReviewRepository;
 import com.example.marketplace.repository.user.UserRepository;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -21,16 +22,18 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
+    private final ReviewRepository reviewRepository;
 
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, UserRepository userRepository) {
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, UserRepository userRepository, ReviewRepository reviewRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     public ProductResponse getProductById(Long id){
      Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found by id = " + id));
-     return new  ProductResponse(product);
+     return newProductResponse(product);
     }
 
     public List<ProductResponse> getAllProduct(){
@@ -53,7 +56,7 @@ public class ProductService {
         product.setCategory(category);
         product.setSeller(user);
 
-        return new  ProductResponse(productRepository.save(product));
+        return newProductResponse(productRepository.save(product));
     }
 
     public ProductResponse updateProduct(Long id, ProductRequest productRequest, Long currentUserId){
@@ -73,7 +76,7 @@ public class ProductService {
             productByUpdate.setCategory(category);
         }
 
-        return new ProductResponse(productRepository.save(productByUpdate));
+        return newProductResponse(productRepository.save(productByUpdate));
     }
 
     public void deleteProduct(Long id, Long currentUserId){
@@ -83,6 +86,17 @@ public class ProductService {
             throw new AccessDeniedException("You are not the owner of this product");
         }
         productRepository.delete(product);
+    }
+
+    private  ProductResponse newProductResponse(Product product){
+        ProductResponse productResponse = new ProductResponse();
+        productResponse.setId(product.getId());
+        productResponse.setName(product.getName());
+        productResponse.setDescription(product.getDescription());
+        productResponse.setPrice(product.getPrice());
+        productResponse.setAverageRating(reviewRepository.getStatisticsByProductId(product.getId()).getAverageRating());
+        productResponse.setReviewsCount(reviewRepository.getStatisticsByProductId(product.getId()).getReviewsCount());
+        return productResponse;
     }
 
 }

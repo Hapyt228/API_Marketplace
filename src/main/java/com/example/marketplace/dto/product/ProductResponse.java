@@ -15,6 +15,8 @@ public class ProductResponse {
     private CategoryResponse category;
     private UserInfoResponce seller;
     private LocalDateTime createdAt;
+    private Double averageRating = 0.0;
+    private Long reviewsCount = 0L;
 
     public ProductResponse() {
     }
@@ -84,5 +86,21 @@ public class ProductResponse {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Double getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating;
+    }
+
+    public Long getReviewsCount() {
+        return reviewsCount;
+    }
+
+    public void setReviewsCount(Long reviewsCount) {
+        this.reviewsCount = reviewsCount;
     }
 }
