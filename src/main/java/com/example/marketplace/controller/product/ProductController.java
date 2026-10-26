@@ -1,16 +1,16 @@
 package com.example.marketplace.controller.product;
 
+import com.example.marketplace.dto.product.ProductPageResponse;
 import com.example.marketplace.dto.product.ProductRequest;
 import com.example.marketplace.dto.product.ProductResponse;
 import com.example.marketplace.entity.user.User;
+import com.example.marketplace.exception.EmptyCartException;
 import com.example.marketplace.service.product.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
@@ -23,8 +23,20 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponse>> getAllProduct(){
-        return ResponseEntity.ok(productService.getAllProduct());
+    public ResponseEntity<ProductPageResponse> getAllProduct(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int pageSize
+    ){
+        if(page < 0){
+            throw new EmptyCartException("Page is empty");
+        }
+        if (pageSize <= 0){
+            throw new EmptyCartException("Page is empty");
+        }
+        if (pageSize > 50){
+            pageSize = 50;
+        }
+        return ResponseEntity.ok(productService.getAllProduct(page, pageSize));
     }
 
     @GetMapping("/{id}")

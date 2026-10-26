@@ -1,5 +1,6 @@
 package com.example.marketplace.service.product;
 
+import com.example.marketplace.dto.product.ProductPageResponse;
 import com.example.marketplace.dto.product.ProductRequest;
 import com.example.marketplace.dto.product.ProductResponse;
 import com.example.marketplace.entity.category.Category;
@@ -11,9 +12,14 @@ import com.example.marketplace.repository.product.ProductRepository;
 import com.example.marketplace.repository.review.ReviewRepository;
 import com.example.marketplace.repository.review.ReviewStatistics;
 import com.example.marketplace.repository.user.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,11 +43,24 @@ public class ProductService {
         return newProductResponse(product);
     }
 
-    public List<ProductResponse> getAllProduct(){
-        return productRepository.findAll()
-                .stream()
-                .map(this::newProductResponse)
-                .toList();
+    public ProductPageResponse getAllProduct(Integer page, Integer pageSize){
+        Pageable pageable = PageRequest.of(
+                page,
+                pageSize,
+                Sort.by(Sort.Direction.DESC, "createdAt")
+        );
+        Page<Product> productPage = productRepository.findAll(pageable);
+        ProductPageResponse productPageResponse = new ProductPageResponse();
+        List<ProductResponse> productPageResponses = new ArrayList<>();
+        for (Product product : productPage) {
+            productPageResponses.add(newProductResponse(product));
+        }
+        productPageResponse.setContent(productPageResponses);
+        productPageResponse.setPage(productPage.getNumber());
+        productPageResponse.setPageSize(productPage.getSize());
+        productPageResponse.setTotalElement(productPage.getTotalElements());
+        productPageResponse.setTotalPages(productPage.getTotalPages());
+        return productPageResponse;
     }
 
     public ProductResponse addProduct(ProductRequest productRequest, Long userId){
