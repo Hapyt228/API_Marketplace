@@ -4,7 +4,7 @@ import com.example.marketplace.dto.product.ProductPageResponse;
 import com.example.marketplace.dto.product.ProductRequest;
 import com.example.marketplace.dto.product.ProductResponse;
 import com.example.marketplace.entity.user.User;
-import com.example.marketplace.exception.EmptyCartException;
+import com.example.marketplace.exception.InvalidPageRequestException;
 import com.example.marketplace.service.product.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -28,10 +28,10 @@ public class ProductController {
             @RequestParam(name = "size", defaultValue = "10") int pageSize
     ){
         if(page < 0){
-            throw new EmptyCartException("Page is empty");
+            throw new InvalidPageRequestException("Page must be 0 or greater");
         }
         if (pageSize <= 0){
-            throw new EmptyCartException("Page is empty");
+            throw new InvalidPageRequestException("Size must be 1 or greater");
         }
         if (pageSize > 50){
             pageSize = 50;

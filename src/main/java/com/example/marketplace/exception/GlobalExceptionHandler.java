@@ -149,4 +149,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         problem.setTitle("Conflict");
         return problem;
     }
+
+    @ExceptionHandler(InvalidPageRequestException.class)
+    public ProblemDetail invalidPageRequestException(InvalidPageRequestException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage()
+        );
+        problem.setTitle("Bad Request, please try again");
+        return problem;
+    }
+
 }
