@@ -47,7 +47,7 @@ public class ProductService {
         Pageable pageable = PageRequest.of(
                 page,
                 pageSize,
-                Sort.by(Sort.Direction.DESC, "createdAt")
+                Sort.by(Sort.Direction.DESC, "createdAt").and(Sort.by(Sort.Direction.DESC, "id"))
         );
         Page<Product> productPage = productRepository.findAll(pageable);
         ProductPageResponse productPageResponse = new ProductPageResponse();
