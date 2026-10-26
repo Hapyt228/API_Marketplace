@@ -2,6 +2,11 @@ package com.example.marketplace.integration;
 
 import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import java.util.ArrayList;
+import java.util.Comparator;
 
 import java.util.HashSet;
 import java.util.List;
@@ -15,6 +20,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class ProductPaginationIntegrationTest extends AbstractIntegrationTest {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     private void createProducts(int count) throws Exception {
         String seller = registerAndLogin();
@@ -140,4 +148,49 @@ class ProductPaginationIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.content[0].averageRating").exists())
                 .andExpect(jsonPath("$.content[0].reviewsCount").exists());
     }
+
+    @Test
+    void getProducts_sizeZero_returns400WithDetail() throws Exception {
+        send(get("/api/products").param("size", "0"), null, null)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Size must be 1 or greater"));
+    }
+
+    @Test
+    void getProducts_negativeSize_returns400WithDetail() throws Exception {
+        send(get("/api/products").param("size", "-5"), null, null)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Size must be 1 or greater"));
+    }
+
+    @Test
+    void getProducts_negativePage_returns400WithDetail() throws Exception {
+        send(get("/api/products").param("page", "-1"), null, null)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Page must be 0 or greater"));
+    }
+
+    @Test
+    void getProducts_sameCreatedAt_pagesDoNotOverlapAndKeepIdOrder() throws Exception {
+        createProducts(12);
+        jdbcTemplate.update("UPDATE products SET created_at = CURRENT_TIMESTAMP");
+        long total = totalElements();
+        int pages = (int) Math.ceil(total / 5.0);
+        List<Integer> allIds = new ArrayList<>();
+
+        for (int page = 0; page < pages; page++) {
+            String body = send(get("/api/products")
+                    .param("page", String.valueOf(page))
+                    .param("size", "5"), null, null)
+                    .andExpect(status().isOk())
+                    .andReturn().getResponse().getContentAsString();
+            List<Integer> ids = JsonPath.read(body, "$.content[*].id");
+            allIds.addAll(ids);
+        }
+
+        assertThat(allIds).hasSize((int) total);
+        assertThat(new HashSet<>(allIds)).hasSize((int) total);
+        assertThat(allIds).isSortedAccordingTo(Comparator.reverseOrder());
+    }
+
 }
