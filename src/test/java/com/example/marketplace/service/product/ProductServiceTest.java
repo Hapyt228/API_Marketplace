@@ -56,7 +56,7 @@ class ProductServiceTest {
 
         assertThatThrownBy(() -> productService.deleteProduct(5L, 2L))
                 .isInstanceOf(AccessDeniedException.class);
-        verify(productRepository, never()).delete(any());
+        verify(productRepository, never()).delete(any(Product.class));
     }
 
     @Test
