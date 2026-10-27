@@ -6,6 +6,7 @@ import com.example.marketplace.dto.product.ProductResponse;
 import com.example.marketplace.entity.category.Category;
 import com.example.marketplace.entity.product.Product;
 import com.example.marketplace.entity.user.User;
+import com.example.marketplace.exception.InvalidRequestParameterException;
 import com.example.marketplace.exception.ResourceNotFoundException;
 import com.example.marketplace.repository.category.CategoryRepository;
 import com.example.marketplace.repository.product.ProductRepository;
@@ -43,11 +44,12 @@ public class ProductService {
         return newProductResponse(product);
     }
 
-    public ProductPageResponse getAllProduct(Integer page, Integer pageSize){
+    public ProductPageResponse getAllProduct(Integer page, Integer pageSize, String sortRequest){
+        Sort sort = parseSort(sortRequest);
         Pageable pageable = PageRequest.of(
                 page,
                 pageSize,
-                Sort.by(Sort.Direction.DESC, "createdAt").and(Sort.by(Sort.Direction.DESC, "id"))
+                sort
         );
         Page<Product> productPage = productRepository.findAll(pageable);
         ProductPageResponse productPageResponse = new ProductPageResponse();
@@ -114,6 +116,38 @@ public class ProductService {
         productResponse.setAverageRating(reviewStatistics.getAverageRating());
         productResponse.setReviewsCount(reviewStatistics.getReviewsCount());
         return productResponse;
+    }
+
+    private Sort parseSort(String sortRequest){
+        Sort sort;
+        String nameBySort;
+        String nameByFilter;
+        if(sortRequest == null){
+            return Sort.by(Sort.Direction.DESC, "createdAt").and(Sort.by(Sort.Direction.DESC, "id"));
+        }
+        String[] parts = sortRequest.split(",", -1);
+        nameByFilter = parts[0];
+        if(parts.length > 2){
+            throw new InvalidRequestParameterException("Invalid sort format. Expected field or field,asc|desc");
+        }
+        if(parts.length == 1){
+            nameBySort = "asc";
+        }else {
+            nameBySort = parts[1];
+        }
+        if(!(nameByFilter.equals("name") || nameByFilter.equals("price") ||  nameByFilter.equals("createdAt"))){
+            throw new InvalidRequestParameterException("Allowed sort fields: price, name, createdAt");
+        }
+        if(!(nameBySort.equals("asc") ||  nameBySort.equals("desc"))){
+            throw new InvalidRequestParameterException("Sort direction must be asc or desc");
+        }
+        if(nameBySort.equals("asc")) {
+            sort = Sort.by(Sort.Direction.ASC, nameByFilter).and(Sort.by(Sort.Direction.ASC, "id"));
+        }else{
+            sort = Sort.by(Sort.Direction.DESC, nameByFilter).and(Sort.by(Sort.Direction.ASC, "id"));
+        }
+
+        return sort;
     }
 
 }

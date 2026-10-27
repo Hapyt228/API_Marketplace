@@ -25,7 +25,8 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<ProductPageResponse> getAllProduct(
             @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "size", defaultValue = "10") int pageSize
+            @RequestParam(name = "size", defaultValue = "10") int pageSize,
+            @RequestParam(name = "sort", required = false) String sort
     ){
         if(page < 0){
             throw new InvalidPageRequestException("Page must be 0 or greater");
@@ -36,7 +37,7 @@ public class ProductController {
         if (pageSize > 50){
             pageSize = 50;
         }
-        return ResponseEntity.ok(productService.getAllProduct(page, pageSize));
+        return ResponseEntity.ok(productService.getAllProduct(page, pageSize, sort));
     }
 
     @GetMapping("/{id}")

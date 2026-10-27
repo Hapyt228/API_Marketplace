@@ -160,4 +160,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(InvalidRequestParameterException.class)
+    public ProblemDetail invalidRequestParameterException(InvalidRequestParameterException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage()
+        );
+        problem.setTitle("Bad Request, please try again");
+        return problem;
+    }
 }
