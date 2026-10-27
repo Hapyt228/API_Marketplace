@@ -6,6 +6,7 @@ import com.example.marketplace.dto.product.ProductResponse;
 import com.example.marketplace.entity.category.Category;
 import com.example.marketplace.entity.product.Product;
 import com.example.marketplace.entity.user.User;
+import com.example.marketplace.exception.InvalidPageRequestException;
 import com.example.marketplace.exception.InvalidRequestParameterException;
 import com.example.marketplace.exception.ResourceNotFoundException;
 import com.example.marketplace.repository.category.CategoryRepository;
@@ -17,12 +18,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
+import jakarta.persistence.criteria.Predicate;
 
 @Service
 public class ProductService {
@@ -44,14 +49,57 @@ public class ProductService {
         return newProductResponse(product);
     }
 
-    public ProductPageResponse getAllProduct(Integer page, Integer pageSize, String sortRequest){
+    public ProductPageResponse getAllProduct(Integer page, Integer pageSize, String sortRequest, Long categoryId, BigDecimal minPrice, BigDecimal maxPrice, String q){
+        if (minPrice != null && minPrice.compareTo(BigDecimal.ZERO) < 0) {
+            throw new InvalidRequestParameterException(
+                    "minPrice must be greater than or equal to 0"
+            );
+        }
+        if (maxPrice != null && maxPrice.compareTo(BigDecimal.ZERO) < 0) {
+            throw new InvalidRequestParameterException(
+                    "maxPrice must be greater than or equal to 0"
+            );
+        }
+        if (minPrice != null && maxPrice != null
+                && minPrice.compareTo(maxPrice) > 0) {
+            throw new InvalidRequestParameterException(
+                    "minPrice must be less than or equal to maxPrice"
+            );
+        }
+        Specification<Product> specification = (root, query, cb) -> {
+            List<Predicate> conditions = new ArrayList<>();
+
+            if (categoryId != null) {
+                conditions.add(cb.equal(root.get("category").get("id"), categoryId));
+            }
+
+            if (minPrice != null) {
+                conditions.add(cb.greaterThanOrEqualTo(root.get("price"), minPrice));
+            }
+
+            if (maxPrice != null) {
+                conditions.add(cb.lessThanOrEqualTo(root.get("price"), maxPrice));
+            }
+
+            if (q != null && !q.isBlank()) {
+                String search = q.trim()
+                        .toLowerCase(Locale.ROOT)
+                        .replace("!", "!!")
+                        .replace("%", "!%")
+                        .replace("_", "!_");
+
+                conditions.add(cb.like(cb.lower(root.get("name")), "%" + search + "%", '!'));
+            }
+
+            return cb.and(conditions.toArray(new Predicate[0]));
+        };
         Sort sort = parseSort(sortRequest);
         Pageable pageable = PageRequest.of(
                 page,
                 pageSize,
                 sort
         );
-        Page<Product> productPage = productRepository.findAll(pageable);
+        Page<Product> productPage = productRepository.findAll(specification, pageable);
         ProductPageResponse productPageResponse = new ProductPageResponse();
         List<ProductResponse> productPageResponses = new ArrayList<>();
         for (Product product : productPage) {
@@ -146,7 +194,6 @@ public class ProductService {
         }else{
             sort = Sort.by(Sort.Direction.DESC, nameByFilter).and(Sort.by(Sort.Direction.ASC, "id"));
         }
-
         return sort;
     }
 

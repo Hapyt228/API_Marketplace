@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
@@ -26,7 +28,11 @@ public class ProductController {
     public ResponseEntity<ProductPageResponse> getAllProduct(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int pageSize,
-            @RequestParam(name = "sort", required = false) String sort
+            @RequestParam(name = "sort", required = false) String sort,
+            @RequestParam(name = "categoryId", required = false) Long categoryId,
+            @RequestParam(name = "minPrice", required = false) BigDecimal minPrice,
+            @RequestParam(name = "maxPrice", required = false) BigDecimal maxPrice,
+            @RequestParam(name = "q", required = false) String q
     ){
         if(page < 0){
             throw new InvalidPageRequestException("Page must be 0 or greater");
@@ -37,7 +43,7 @@ public class ProductController {
         if (pageSize > 50){
             pageSize = 50;
         }
-        return ResponseEntity.ok(productService.getAllProduct(page, pageSize, sort));
+        return ResponseEntity.ok(productService.getAllProduct(page, pageSize, sort, categoryId, minPrice, maxPrice, q));
     }
 
     @GetMapping("/{id}")
